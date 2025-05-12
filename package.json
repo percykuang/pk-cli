@@ -14,6 +14,9 @@
     "Vue3"
   ],
   "author": "Percy Kuang",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "pk": "./dist/index.js"
   },
