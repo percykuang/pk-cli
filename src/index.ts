@@ -2,7 +2,7 @@ import { Command } from "commander";
 import { version } from "../package.json";
 import { create } from "./command/create";
 
-const program = new Command("pk");
+const program = new Command("nova-cli");
 
 program.version(version, "-v, --version");
 

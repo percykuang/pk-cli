@@ -18,7 +18,7 @@
     "access": "public"
   },
   "bin": {
-    "pk": "./dist/index.js"
+    "nova-cli": "./dist/index.js"
   },
   "files": [
     "dist",
