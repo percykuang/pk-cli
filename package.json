@@ -1,5 +1,5 @@
 {
-  "name": "pk-cli",
+  "name": "@pk/cli",
   "version": "0.0.1",
   "description": "pk-cli 脚手架",
   "type": "module",
