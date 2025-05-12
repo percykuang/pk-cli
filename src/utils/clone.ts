@@ -36,7 +36,7 @@ export const clone = async (
     });
     console.log(chalk.green("代码下载成功！"));
     console.log(chalk.blackBright("============================="));
-    console.log(chalk.blackBright("======== 欢迎使用 nova-cli =========="));
+    console.log(chalk.blackBright("======== 欢迎使用 werk-cli =========="));
     console.log(chalk.blackBright("============================="));
     console.log(
       chalk.blackBright("======== 请使用 pnpm install 安装依赖 ==========")

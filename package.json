@@ -1,7 +1,7 @@
 {
-  "name": "@nova/cli",
+  "name": "@werk/cli",
   "version": "0.0.2",
-  "description": "nova-cli 脚手架",
+  "description": "werk-cli 脚手架",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "access": "public"
   },
   "bin": {
-    "nova-cli": "./dist/index.js"
+    "werk-cli": "./dist/index.js"
   },
   "files": [
     "dist",
