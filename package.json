@@ -1,7 +1,7 @@
 {
-  "name": "@pk/cli",
-  "version": "0.0.1",
-  "description": "pk-cli 脚手架",
+  "name": "@nova/cli",
+  "version": "0.0.2",
+  "description": "nova-cli 脚手架",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
