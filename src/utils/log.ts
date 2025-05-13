@@ -1,17 +1,17 @@
-import logSymbols from 'log-symbols';
+import chalk from 'chalk';
 
 const log = {
-  info: (message: string) => {
-    console.log(logSymbols.info, message);
-  },
   success: (message: string) => {
-    console.log(logSymbols.success, message);
+    console.log(chalk.green(`✔ ${message}`));
+  },
+  info: (message: string) => {
+    console.log(chalk.blue(`ℹ ${message}`));
   },
   error: (message: string) => {
-    console.log(logSymbols.error, message);
+    console.log(chalk.red(`✗ ${message}`));
   },
   warning: (message: string) => {
-    console.log(logSymbols.warning, message);
+    console.log(chalk.yellow(`⚠ ${message}`));
   },
 };
 

@@ -28,7 +28,6 @@ const execPromise = (command: string): Promise<string> => {
 const update = async () => {
   try {
     spinner.start('正在检查最新版本...');
-    console.log('\n');
 
     // 获取当前安装的版本
     const currentVersion = await execPromise(`npm list -g ${name} --json`)
@@ -57,28 +56,27 @@ const update = async () => {
     const latestVersion = allVersions.length > 0 ? allVersions[allVersions.length - 1] : null;
 
     if (!latestVersion) {
-      spinner.fail(chalk.red('无法获取最新版本信息'));
-      log.info(chalk.yellow('可能是网络问题或 npm 注册表暂时不可用，请稍后再试'));
+      spinner.fail('无法获取最新版本信息');
+      log.warning('可能是网络问题或 npm 注册表暂时不可用，请稍后再试');
       return;
     }
 
     // 显示版本信息
     spinner.stop();
-    log.info(chalk.blue(`当前版本: ${currentVersion}`));
-    log.info(chalk.blue(`最新版本: ${latestVersion}`));
+    log.info(`当前版本: ${currentVersion}`);
+    log.info(`最新版本: ${latestVersion}`);
 
     // 比较当前版本和最新版本
     const isNewVersionAvailable = gt(latestVersion, currentVersion);
 
     // 如果已经是最新版本，则退出
     if (!isNewVersionAvailable) {
-      log.info(chalk.green(`✓ 当前已经是最新版本`));
+      log.info('当前已经是最新版本!');
       return;
     }
 
     // 询问用户是否要更新
-    const { default: inquirer } = await import('@inquirer/prompts');
-    const { confirm } = inquirer;
+    const { confirm } = await import('@inquirer/prompts');
 
     const shouldUpdate = await confirm({
       message: `是否更新到最新版本 ${latestVersion}？`,
@@ -86,7 +84,7 @@ const update = async () => {
     });
 
     if (!shouldUpdate) {
-      log.info(chalk.yellow('已取消更新'));
+      log.warning('已取消更新！');
       return;
     }
 
@@ -113,44 +111,38 @@ const update = async () => {
       spinner.stop();
 
       if (newVersion === latestVersion) {
-        log.info(chalk.green(`✓ 更新成功！`));
-        log.info(chalk.green(`已从 ${currentVersion} 更新到 ${latestVersion}`));
+        log.success(`更新成功！`);
+        log.success(`已从 ${currentVersion} 更新到 ${latestVersion}`);
       } else {
-        log.info(chalk.yellow(`⚠ 更新可能部分成功`));
-        log.info(chalk.yellow(`期望版本: ${latestVersion}`));
-        log.info(chalk.yellow(`当前版本: ${newVersion || '未知'}`));
+        log.warning(`更新可能部分成功`);
+        log.warning(`期望版本: ${latestVersion}`);
+        log.warning(`当前版本: ${newVersion || '未知'}`);
 
         // 如果验证失败，尝试使用官方源
-        log.info(chalk.blue('尝试使用官方源进行安装...'));
+        log.info('尝试使用官方源进行安装...');
         spinner.start('使用官方源重新安装...');
         await execPromise(
           `npm install ${name}@${latestVersion} -g --force --registry=https://registry.npmjs.org/`,
         );
         spinner.stop();
-        log.info(chalk.green(`✓ 更新完成！`));
-        log.info(chalk.green(`已从 ${currentVersion} 更新到 ${latestVersion}`));
+        log.success('更新完成！');
+        log.success(`已从 ${currentVersion} 更新到 ${latestVersion}`);
       }
     } catch (error) {
       // 如果安装失败，提供更多选项
       spinner.stop();
-      log.info(chalk.red(`✗ 更新失败`));
+      log.error(`更新失败!`);
       log.error(String(error));
-      log.info(chalk.yellow(`您可以尝试以下方法手动更新:`));
-      log.info(chalk.yellow(`1. npm install ${name}@${latestVersion} -g --force`));
-      log.info(
-        chalk.yellow(`2. npm cache clean --force && npm install ${name}@${latestVersion} -g`),
-      );
-      log.info(
-        chalk.yellow(
-          `3. 切换到官方源: npm config set registry https://registry.npmjs.org/ 然后重试`,
-        ),
-      );
+      log.warning(`您可以尝试以下方法手动更新:`);
+      log.warning(`1. npm install ${name}@${latestVersion} -g --force`);
+      log.warning(`2. npm cache clean --force && npm install ${name}@${latestVersion} -g`);
+      log.warning(`3. 切换到官方源: npm config set registry https://registry.npmjs.org/ 然后重试`);
     }
   } catch (error) {
     spinner.stop();
-    log.info(chalk.red(`✗ 更新过程中发生错误`));
+    log.error(`更新过程中发生错误`);
     log.error(String(error));
-    log.info(chalk.yellow(`您可以尝试手动更新: npm install ${name}@latest -g --force`));
+    log.warning(`您可以尝试手动更新: npm install ${name}@latest -g --force`);
   }
 };
 

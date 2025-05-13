@@ -1,6 +1,5 @@
 import { input, select } from '@inquirer/prompts';
 
-import chalk from 'chalk';
 import fs from 'fs-extra';
 import { gt } from 'lodash';
 import path from 'path';
@@ -15,9 +14,7 @@ const checkVersion = async (name: string, version: string) => {
   const lastestVersion = await getNpmLatestVersion(name);
   const isLowVersion = gt(lastestVersion, version);
   if (isLowVersion) {
-    log.warning(
-      chalk.yellow(`当前版本 ${version} 不是最新版本，可以执行 werk-cli update 进行更新！`),
-    );
+    log.warning('当前版本 ${version} 不是最新版本，可以执行 werk-cli update 进行更新！');
   }
   return isLowVersion;
 };

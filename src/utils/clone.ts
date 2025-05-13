@@ -29,12 +29,13 @@ const clone = async (gitUrl: string, projectName: string, options: string[]) => 
       // 预计时间
       estimate: 7000,
     });
-    console.log(chalk.green('\n加载完成！可以执行以下命令开始项目：\n'));
+    log.success('加载完成！\n');
+    console.log(chalk.green('可以执行以下命令开始项目：\n'));
     console.log(chalk.green(`cd ${projectName}\n`));
     console.log(chalk.green('pnpm i\n'));
     console.log(chalk.green('pnpm dev\n'));
   } catch (error) {
-    log.error(chalk.red(`加载失败！\n${error}`));
+    log.error(`加载失败！\n${error}`);
   }
 };
 
