@@ -1,6 +1,6 @@
 {
   "name": "@werk/cli",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "werk-cli 脚手架",
   "type": "module",
   "main": "dist/index.js",
