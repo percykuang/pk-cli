@@ -9,6 +9,26 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
+// 创建锁文件路径
+const lockFilePath = path.join(rootDir, '.version-bump-lock');
+
+// 检查是否已经在处理版本升级
+function isVersionBumpInProgress() {
+  return fs.existsSync(lockFilePath);
+}
+
+// 设置版本升级锁
+function setVersionBumpLock() {
+  fs.writeFileSync(lockFilePath, Date.now().toString());
+}
+
+// 清除版本升级锁
+function clearVersionBumpLock() {
+  if (fs.existsSync(lockFilePath)) {
+    fs.unlinkSync(lockFilePath);
+  }
+}
+
 // 读取最近的提交信息
 function getLatestCommitMessage() {
   try {
@@ -17,6 +37,15 @@ function getLatestCommitMessage() {
     console.error('获取最近提交信息失败:', error);
     return '';
   }
+}
+
+// 检查提交是否是自动版本升级提交
+function isVersionBumpCommit(commitMessage) {
+  return (
+    commitMessage.includes('版本升级至') ||
+    commitMessage.includes('version bump') ||
+    commitMessage.includes('bump version')
+  );
 }
 
 // 根据提交信息确定版本升级类型
@@ -29,7 +58,7 @@ function determineVersionBump(commitMessage) {
     return 'patch';
   }
 
-  // 如果没有明确指定，默认为补丁版本
+  // 如果没有明确指定，默认为null
   return null;
 }
 
@@ -64,9 +93,30 @@ function bumpVersion(type) {
 
 // 主函数
 function main() {
-  const commitMessage = getLatestCommitMessage();
-  const versionType = determineVersionBump(commitMessage);
-  bumpVersion(versionType);
+  try {
+    // 检查是否已经在处理版本升级
+    if (isVersionBumpInProgress()) {
+      console.log('版本升级已在进行中，跳过本次操作');
+      return;
+    }
+
+    const commitMessage = getLatestCommitMessage();
+
+    // 检查是否是自动版本升级提交
+    if (isVersionBumpCommit(commitMessage)) {
+      console.log('检测到自动版本升级提交，跳过本次操作');
+      return;
+    }
+
+    // 设置锁，防止重复执行
+    setVersionBumpLock();
+
+    const versionType = determineVersionBump(commitMessage);
+    bumpVersion(versionType);
+  } finally {
+    // 清除锁
+    clearVersionBumpLock();
+  }
 }
 
 main();
