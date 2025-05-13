@@ -28,6 +28,7 @@ const execPromise = (command: string): Promise<string> => {
 const update = async () => {
   try {
     spinner.start('正在检查最新版本...');
+    console.log('\n');
 
     // 获取当前安装的版本
     const currentVersion = await execPromise(`npm list -g ${name} --json`)
