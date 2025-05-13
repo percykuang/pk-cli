@@ -1,11 +1,8 @@
 import chalk from 'chalk';
-import { exec } from 'child_process';
-import { gt } from 'lodash';
+import process from 'child_process';
 import ora from 'ora';
 
 import { log } from '@/utils';
-
-import { name, version } from '../../package.json';
 
 const spinner = ora({
   text: '更新中...',
@@ -15,120 +12,17 @@ const spinner = ora({
   },
 });
 
-// 执行命令的 Promise 包装
-const execPromise = (command: string): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    exec(command, (error, stdout) => {
-      if (error) reject(error);
-      else resolve(stdout.trim());
-    });
-  });
-};
-
-const update = async () => {
-  try {
-    spinner.start('正在检查最新版本...');
-
-    // 获取当前安装的版本
-    const currentVersion = await execPromise(`npm list -g ${name} --json`)
-      .then((output) => {
-        try {
-          const json = JSON.parse(output);
-          return json.dependencies?.[name]?.version || version;
-        } catch (e) {
-          return version;
-        }
-      })
-      .catch(() => version);
-
-    // 获取所有可用版本
-    const allVersions = await execPromise(`npm view ${name} versions --json`)
-      .then((output) => {
-        try {
-          return JSON.parse(output);
-        } catch (e) {
-          return [];
-        }
-      })
-      .catch(() => []);
-
-    // 获取最新版本
-    const latestVersion = allVersions.length > 0 ? allVersions[allVersions.length - 1] : null;
-
-    if (!latestVersion) {
-      spinner.fail(chalk.red('无法获取最新版本信息'));
-      log.info(chalk.yellow('可能是网络问题或 npm 注册表暂时不可用，请稍后再试'));
-      return;
-    }
-
-    log.info(chalk.blue(`当前版本: ${currentVersion}`));
-    log.info(chalk.blue(`最新版本: ${latestVersion}`));
-
-    // 比较当前版本和最新版本
-    const isNewVersionAvailable = gt(latestVersion, currentVersion);
-
-    // 如果已经是最新版本，则退出
-    if (!isNewVersionAvailable) {
-      spinner.succeed(chalk.green(`当前已经是最新版本 ${currentVersion}`));
-      return;
-    }
-
-    // 安装最新版本
-    spinner.text = `正在更新到最新版本 ${latestVersion}...`;
-
-    try {
-      // 先清除缓存，然后安装
-      await execPromise('npm cache clean --force');
-      await execPromise(`npm install ${name}@${latestVersion} -g --force`);
-
-      // 验证安装结果
-      const newVersion = await execPromise(`npm list -g ${name} --json`)
-        .then((output) => {
-          try {
-            const json = JSON.parse(output);
-            return json.dependencies?.[name]?.version || null;
-          } catch (e) {
-            return null;
-          }
-        })
-        .catch(() => null);
-
-      if (newVersion === latestVersion) {
-        spinner.succeed(chalk.green(`更新成功！当前版本: ${latestVersion}`));
-      } else {
-        spinner.warn(
-          chalk.yellow(
-            `更新可能部分成功。期望版本: ${latestVersion}, 当前版本: ${newVersion || '未知'}`,
-          ),
-        );
-
-        // 如果验证失败，尝试使用官方源
-        log.info(chalk.blue('尝试使用官方源进行安装...'));
-        await execPromise(
-          `npm install ${name}@${latestVersion} -g --force --registry=https://registry.npmjs.org/`,
-        );
-        spinner.succeed(chalk.green(`更新完成，请运行 '${name} --version' 检查当前版本`));
-      }
-    } catch (error) {
-      // 如果安装失败，提供更多选项
+const update = () => {
+  spinner.start();
+  process.exec('npm install @werk/cli@latest -g', (error) => {
+    spinner.stop();
+    if (error) {
       spinner.fail(chalk.red('更新失败'));
       log.error(String(error));
-      log.info(chalk.yellow(`您可以尝试以下方法手动更新:`));
-      log.info(chalk.yellow(`1. npm install ${name}@${latestVersion} -g --force`));
-      log.info(
-        chalk.yellow(`2. npm cache clean --force && npm install ${name}@${latestVersion} -g`),
-      );
-      log.info(
-        chalk.yellow(
-          `3. 切换到官方源: npm config set registry https://registry.npmjs.org/ 然后重试`,
-        ),
-      );
+      return;
     }
-  } catch (error) {
-    spinner.fail(chalk.red('更新过程中发生错误'));
-    log.error(String(error));
-    log.info(chalk.yellow(`您可以尝试手动更新: npm install ${name}@latest -g --force`));
-  }
+    spinner.succeed(chalk.green('更新成功'));
+  });
 };
 
 export default update;
