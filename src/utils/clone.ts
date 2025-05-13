@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import createLogger from 'progress-estimator';
 import simpleGit, { SimpleGitOptions } from 'simple-git';
 
-import { log } from '@/utils';
+import log from './log';
 
 // 初始化进度条
 const logger = createLogger({

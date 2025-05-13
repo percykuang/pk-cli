@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import 'tslib';
 
-import { log } from '@/utils';
+import log from './log';
 
 const getNpmInfo = async (npmName: string) => {
   const npmUrl = `https://registry.npmjs.org/${npmName}`;

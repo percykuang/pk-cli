@@ -2,7 +2,7 @@ import { select } from '@inquirer/prompts';
 
 import 'tslib';
 
-import { log } from '@/utils';
+import log from './log';
 
 const isOverwrite = async (dir: string): Promise<boolean> => {
   log.warning(`目标目录 ${dir} 已存在`);
