@@ -40,8 +40,15 @@ export default defineConfig([
         // 意味着开发依赖会被打包进最终产物
         devDeps: false,
       }),
-      // 解析json文件
-      json(),
+      // 解析json文件，确保package.json中的版本号被正确导入
+      json({
+        // 这个选项设置为 true 时，插件会使用 const 声明来定义从 JSON 文件中导入的属性变量，而不是使用 var
+        // 这有助于树摇（tree-shaking）优化，因为 const 声明的变量不可变，更容易被分析和优化
+        preferConst: true,
+        // 这个选项设置为 true 时，插件会为 JSON 对象的每个属性生成命名导出
+        // 这样可以使用解构导入的方式从 JSON 文件中导入特定属性，例如 import { version } from './package.json'
+        namedExports: true,
+      }),
       // 解析ts文件
       typescript(),
       // 解析commonjs模块
