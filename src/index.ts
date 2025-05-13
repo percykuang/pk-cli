@@ -2,8 +2,12 @@
 import { Command } from 'commander';
 
 import { create, update } from '@/command';
+import { handleException } from '@/utils';
 
 import { version } from '../package.json';
+
+// 处理用户中断（Ctrl+C）和终止信号
+handleException();
 
 const program = new Command('werk-cli');
 

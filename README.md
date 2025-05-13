@@ -9,7 +9,7 @@ werk (发音为 /vɛʁk/，类似 verk) 在德语中常表示工具、作品等�
 ## 🚀 安装
 
 ```bash
-npm install werk-cli -g
+npm install @werk/cli -g
 ```
 
 ## 📝 使用
