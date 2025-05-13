@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.1](https://github.com/percykuang/pk-cli/compare/v0.2.0...v0.2.1) (2025-05-13)
+
+
+### 🐛 Bug修复
+
+* **patch:** 彻底修复版本更新不到最新版本的问题 ([42d2de1](https://github.com/percykuang/pk-cli/commit/42d2de10ffce9c7039dd560e812293ddf76801f1))
+
 ## [0.2.0](https://github.com/percykuang/pk-cli/compare/v0.1.3...v0.2.0) (2025-05-13)
 
 
