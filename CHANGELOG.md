@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.2](https://github.com/percykuang/pk-cli/compare/v0.2.1...v0.2.2) (2025-05-13)
+
+
+### 🔨 其他更改
+
+* **patch:** 添加空行,美化展示 ([4bc912d](https://github.com/percykuang/pk-cli/commit/4bc912d2730b05e19edd1a7f97764be1b7786061))
+
 ### [0.2.1](https://github.com/percykuang/pk-cli/compare/v0.2.0...v0.2.1) (2025-05-13)
 
 
