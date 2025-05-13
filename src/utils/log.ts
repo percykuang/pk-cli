@@ -5,7 +5,7 @@ const log = {
     console.log(chalk.green(`✔ ${message}`));
   },
   info: (message: string) => {
-    console.log(chalk.blue(`ℹ ${message}`));
+    console.log(chalk.cyan(`ℹ ${message}`));
   },
   error: (message: string) => {
     console.log(chalk.red(`✗ ${message}`));
