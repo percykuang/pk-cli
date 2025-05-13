@@ -1,68 +1,39 @@
-import { input, select } from "@inquirer/prompts";
-import "tslib";
-import { clone } from "../utils/clone";
-import path from "path";
-import fs from "fs-extra";
-export interface TemplateInfo {
-  name: string;
-  downloadUrl: string;
-  description: string;
-  branch: string;
-}
+import { input, select } from '@inquirer/prompts';
 
-export const templates: Map<string, TemplateInfo> = new Map([
-  [
-    "vite-vue3-typescript-template",
-    {
-      name: "vite-vue3-typescript-template",
-      downloadUrl: "git@github.com:percykuang/css-scope-loader.git",
-      description: "vite-vue3-typescript-template",
-      branch: "main",
-    },
-  ],
-  [
-    "vite-vue3-typescript-template-dev10",
-    {
-      name: "vite-vue3-typescript-template",
-      downloadUrl: "git@gitee.com:sohucw/admin-pro.git",
-      description: "vite-vue3-typescript-template",
-      branch: "dev10",
-    },
-  ],
-]);
+import chalk from 'chalk';
+import fs from 'fs-extra';
+import { gt } from 'lodash';
+import path from 'path';
+import 'tslib';
 
-export async function isOverwrite(dir: string): Promise<boolean> {
-  console.warn(`目标目录 ${dir} 已存在`);
-  return await select({
-    message: "是否覆盖？",
-    choices: [
-      {
-        name: "是",
-        value: true,
-      },
-      {
-        name: "否",
-        value: false,
-      },
-    ],
-  });
-}
+import { TemplateInfo, templates } from '@/config';
+import { clone, getNpmLatestVersion, isOverwrite, log } from '@/utils';
 
-export async function create(projectName: string) {
+import { name, version } from '../../package.json';
+
+const checkVersion = async (name: string, version: string) => {
+  const lastestVersion = await getNpmLatestVersion(name);
+  const isLowVersion = gt(lastestVersion, version);
+  if (isLowVersion) {
+    log.warning(
+      chalk.yellow(`当前版本 ${version} 不是最新版本，可以执行 werk-cli update 进行更新！`),
+    );
+  }
+  return isLowVersion;
+};
+
+const create = async (projectName: string) => {
   // 初始化模板列表
-  const templateList = Array.from(templates).map(
-    (item: [string, TemplateInfo]) => {
-      const [name, info] = item;
-      return {
-        name,
-        value: name,
-        description: info.description,
-      };
-    }
-  );
+  const templateList = Array.from(templates).map((item: [string, TemplateInfo]) => {
+    const [value, info] = item;
+    return {
+      value,
+      name: info.name,
+    };
+  });
   if (!projectName) {
     projectName = await input({
-      message: "请输入项目名称",
+      message: '请输入项目名称',
     });
   }
 
@@ -77,14 +48,18 @@ export async function create(projectName: string) {
     }
   }
 
+  // 检查版本更新
+  await checkVersion(name, version);
+
   const templateName = await select({
-    message: "请选择模板",
+    message: '请选择模板',
     choices: templateList,
   });
   const info = templates.get(templateName);
 
-  console.log("info", info);
   if (info) {
-    clone(info.downloadUrl, projectName, ["-b", info.branch]);
+    clone(info.downloadUrl, projectName, ['-b', info.branch]);
   }
-}
+};
+
+export default create;

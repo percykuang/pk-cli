@@ -1,49 +1,41 @@
-import simpleGit, { SimpleGitOptions } from "simple-git";
-import createLogger from "progress-estimator";
-import chalk from "chalk";
+import chalk from 'chalk';
+import createLogger from 'progress-estimator';
+import simpleGit, { SimpleGitOptions } from 'simple-git';
+
+import { log } from '@/utils';
 
 // 初始化进度条
 const logger = createLogger({
   spinner: {
     interval: 100,
-    frames: ["", "◐", "◓", "◑", "◒"].map((frame) => chalk.green(frame)),
+    frames: ['', '◐', '◓', '◑', '◒'].map((frame) => chalk.green(frame)),
   },
 });
 
 const gitOptions: Partial<SimpleGitOptions> = {
   baseDir: process.cwd(),
-  binary: "git",
+  binary: 'git',
   maxConcurrentProcesses: 6,
 };
 
-export const clone = async (
-  gitUrl: string,
-  projectName: string,
-  options: string[]
-) => {
+const clone = async (gitUrl: string, projectName: string, options: string[]) => {
   const git = simpleGit(gitOptions);
 
   // 添加环境变量跳过 SSH 主机验证
-  git.env(
-    "GIT_SSH_COMMAND",
-    "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
-  );
+  git.env('GIT_SSH_COMMAND', 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null');
 
   try {
-    await logger(git.clone(gitUrl, projectName, options), "代码下载中...", {
+    await logger(git.clone(gitUrl, projectName, options), '加载中...', {
       // 预计时间
       estimate: 7000,
     });
-    console.log(chalk.green("代码下载成功！"));
-    console.log(chalk.blackBright("============================="));
-    console.log(chalk.blackBright("======== 欢迎使用 werk-cli =========="));
-    console.log(chalk.blackBright("============================="));
-    console.log(
-      chalk.blackBright("======== 请使用 pnpm install 安装依赖 ==========")
-    );
-    console.log(chalk.blackBright("======= pnpm run dev 运行项目 =========="));
+    console.log(chalk.green('\n加载完成！可以执行以下命令开始项目：\n'));
+    console.log(chalk.green(`cd ${projectName}\n`));
+    console.log(chalk.green('pnpm i\n'));
+    console.log(chalk.green('pnpm dev\n'));
   } catch (error) {
-    console.error(error);
-    console.error(chalk.red("代码下载失败！"));
+    log.error(chalk.red(`加载失败！\n${error}`));
   }
 };
+
+export default clone;

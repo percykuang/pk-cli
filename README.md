@@ -14,6 +14,20 @@ npm install werk-cli -g
 
 ## 📝 使用
 
+### 1. 创建项目
+
 ```bash
 werk-cli create <project-name>
+```
+
+### 2. 查看版本
+
+```bash
+werk-cli -v or werk-cli --version
+```
+
+### 3. 更新版本
+
+```bash
+werk-cli update
 ```
