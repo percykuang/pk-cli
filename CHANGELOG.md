@@ -1,6 +1,18 @@
 # Changelog
 
-版本升级：本项目所有值得注意的变更都将记录在此文件中。请参阅 [standard-version](https://github.com/conventional-changelog/standard-version) 了解提交指南。
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [0.1.0](https://github.com/percykuang/pk-cli/compare/v0.0.13...v0.1.0) (2025-05-13)
+
+
+### 🔨 其他更改
+
+* update changelog ([506b9fa](https://github.com/percykuang/pk-cli/commit/506b9fa61557e1efc9e82fee42b8146dda259b2e))
+
+
+### ✨ 新功能
+
+* **minor:** 处理了用户手动中断程序能够正常退出的情况 ([53e37e8](https://github.com/percykuang/pk-cli/commit/53e37e87eb6c57bb07ff4b5a68044d7a336f8f14))
 
 ### [0.0.13](https://github.com/percykuang/pk-cli/compare/v0.0.3...v0.0.13) (2025-05-13)
 
