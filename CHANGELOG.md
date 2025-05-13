@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.4](https://github.com/percykuang/pk-cli/compare/v0.2.3...v0.2.4) (2025-05-13)
+
+
+### 🔨 其他更改
+
+* **patch:** 美化展示2 ([4f99b6f](https://github.com/percykuang/pk-cli/commit/4f99b6f3f791c638711474d921efdaae1230faa5))
+
 ### [0.2.3](https://github.com/percykuang/pk-cli/compare/v0.2.2...v0.2.3) (2025-05-13)
 
 
