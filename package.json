@@ -11,10 +11,11 @@
     "format": "prettier --write \"**/*.{js,ts,json,md}\"",
     "format:check": "prettier --check \"**/*.{js,ts,json,md}\"",
     "prepare": "husky",
-    "release:patch": "npm version patch",
-    "release:minor": "npm version minor",
-    "release:major": "npm version major",
-    "version-bump": "node scripts/version-bump.js"
+    "release:patch": "standard-version --release-as patch",
+    "release:minor": "standard-version --release-as minor",
+    "release:major": "standard-version --release-as major",
+    "version-bump": "node scripts/version-bump.js",
+    "version-bump:standard": "node scripts/standard-version-bump.js"
   },
   "keywords": [
     "vite",

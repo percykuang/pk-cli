@@ -80,9 +80,12 @@ function bumpVersion(type) {
 
     console.log(`版本已升级至 ${newVersion}`);
 
-    // 提交版本变更
+    // 提交版本变更，使用环境变量标记这是一个版本升级提交
     execSync('git add package.json', { stdio: 'inherit' });
-    execSync(`git commit --amend --no-edit`, { stdio: 'inherit' });
+    execSync(`git commit -m "chore: 版本升级至 ${newVersion}" --no-verify`, {
+      stdio: 'inherit',
+      env: { ...process.env, VERSION_BUMP: 'true' },
+    });
 
     console.log('版本升级完成');
   } catch (error) {
@@ -111,6 +114,7 @@ function main() {
     // 设置锁，防止重复执行
     setVersionBumpLock();
 
+    // 只有当明确指定版本升级类型时，才进行版本升级
     const versionType = determineVersionBump(commitMessage);
     bumpVersion(versionType);
   } finally {
