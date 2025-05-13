@@ -50,33 +50,24 @@ npm run release:major
 3. 为该版本创建一个Git标签
 4. 更新CHANGELOG.md文件，记录版本变更历史
 
-## 提交规范
+## 提交格式示例
 
-本项目使用 [Conventional Commits](https://www.conventionalcommits.org/zh-hans/v1.0.0/) 规范来规范提交信息格式。
-
-基本格式为：
+以下是一些提交信息的示例：
 
 ```
-<类型>[可选的作用域]: <描述>
-
-[可选的正文]
-
-[可选的脚注]
+feat: 添加新功能（不会触发版本升级）
 ```
 
-常用的类型包括：
+```
+fix(patch): 修复某个bug（会触发补丁版本升级）
+```
 
-- `feat`: 新功能
-- `fix`: 修复bug
-- `docs`: 文档变更
-- `style`: 代码格式（不影响代码运行的变动）
-- `refactor`: 重构（既不是新增功能，也不是修改bug的代码变动）
-- `perf`: 性能优化
-- `test`: 增加测试
-- `chore`: 构建过程或辅助工具的变动
-- `revert`: 回退
-- `build`: 打包
-- `ci`: CI相关变更
-- `patch`: 小版本升级
-- `minor`: 中版本升级
-- `major`: 大版本升级
+```
+feat(minor): 添加新功能（会触发次版本升级）
+```
+
+```
+feat(major): 完全重构API（会触发主版本升级）
+```
+
+只有当提交信息中包含`(patch)`、`(minor)`或`(major)`关键字时，才会触发相应的版本升级。

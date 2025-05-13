@@ -9,26 +9,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
-// 创建锁文件路径
-const lockFilePath = path.join(rootDir, '.version-bump-lock');
-
-// 检查是否已经在处理版本升级
-function isVersionBumpInProgress() {
-  return fs.existsSync(lockFilePath);
-}
-
-// 设置版本升级锁
-function setVersionBumpLock() {
-  fs.writeFileSync(lockFilePath, Date.now().toString());
-}
-
-// 清除版本升级锁
-function clearVersionBumpLock() {
-  if (fs.existsSync(lockFilePath)) {
-    fs.unlinkSync(lockFilePath);
-  }
-}
-
 // 读取最近的提交信息
 function getLatestCommitMessage() {
   try {
@@ -37,15 +17,6 @@ function getLatestCommitMessage() {
     console.error('获取最近提交信息失败:', error);
     return '';
   }
-}
-
-// 检查提交是否是自动版本升级提交
-function isVersionBumpCommit(commitMessage) {
-  return (
-    commitMessage.includes('版本升级至') ||
-    commitMessage.includes('version bump') ||
-    commitMessage.includes('bump version')
-  );
 }
 
 // 根据提交信息确定版本升级类型
@@ -58,7 +29,7 @@ function determineVersionBump(commitMessage) {
     return 'patch';
   }
 
-  // 如果没有明确指定，默认为null
+  // 如果没有明确指定版本升级类型，则不进行升级
   return null;
 }
 
@@ -71,20 +42,11 @@ function bumpVersion(type) {
 
   try {
     console.log(`执行 ${type} 版本升级...`);
-    execSync(`npm version ${type} --no-git-tag-version`, { stdio: 'inherit' });
 
-    // 获取新版本号
-    const packageJsonPath = path.join(rootDir, 'package.json');
-    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-    const newVersion = packageJson.version;
-
-    console.log(`版本已升级至 ${newVersion}`);
-
-    // 提交版本变更，使用环境变量标记这是一个版本升级提交
-    execSync('git add package.json', { stdio: 'inherit' });
-    execSync(`git commit -m "chore: 版本升级至 ${newVersion}" --no-verify`, {
+    // 使用standard-version进行版本升级
+    execSync(`npx standard-version --release-as ${type} --no-verify`, {
       stdio: 'inherit',
-      env: { ...process.env, VERSION_BUMP: 'true' },
+      env: { ...process.env, HUSKY: '0' }, // 禁用husky钩子
     });
 
     console.log('版本升级完成');
@@ -96,31 +58,16 @@ function bumpVersion(type) {
 
 // 主函数
 function main() {
-  try {
-    // 检查是否已经在处理版本升级
-    if (isVersionBumpInProgress()) {
-      console.log('版本升级已在进行中，跳过本次操作');
-      return;
-    }
+  const commitMessage = getLatestCommitMessage();
 
-    const commitMessage = getLatestCommitMessage();
-
-    // 检查是否是自动版本升级提交
-    if (isVersionBumpCommit(commitMessage)) {
-      console.log('检测到自动版本升级提交，跳过本次操作');
-      return;
-    }
-
-    // 设置锁，防止重复执行
-    setVersionBumpLock();
-
-    // 只有当明确指定版本升级类型时，才进行版本升级
-    const versionType = determineVersionBump(commitMessage);
-    bumpVersion(versionType);
-  } finally {
-    // 清除锁
-    clearVersionBumpLock();
+  // 如果提交消息包含版本升级至，则跳过版本升级（这是自动生成的版本提交）
+  if (commitMessage.includes('版本升级至')) {
+    console.log('检测到自动版本升级提交，跳过本次操作');
+    return;
   }
+
+  const versionType = determineVersionBump(commitMessage);
+  bumpVersion(versionType);
 }
 
 main();
